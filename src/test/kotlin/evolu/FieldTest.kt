@@ -26,23 +26,36 @@ internal class FieldTest {
     }
 
     @Test
-    fun getSpotCode() {
+    fun testGetSpotCode() {
         val field = Field(3, 3)
         //    012
         //   #####
-        // 0 #   #
-        // 1 #   #
+        // 0 # 2 #
+        // 1 #341#
         // 2 #   #
         //   #####
-        assertEquals(0, field.getSpotCode(Point(1,1,), Direction.North))
+        assertEquals(0, field.getSpotCode(Point(1,1), Direction.North))
 
-        //field.setSpot(2,2,Field.Spot.Diamond)
-        //fun getSpotCode(position: Point, direction: Direction): Int {
+        // diamond with factor 1
+        field.setSpot(2,1, Field.Spot.Diamond)
+        assertEquals(1, field.getSpotCode(Point(1,1), Direction.North))
+        assertEquals(1 *3, field.getSpotCode(Point(1,1), Direction.East))
+        assertEquals(1 *3*3, field.getSpotCode(Point(1,1), Direction.South))
 
-        //  2
-        // 341
+        // Test diamond at our current place
+        assertEquals(1 *3*3*3, field.getSpotCode(Point(2,1), Direction.West))
 
-        }
+        // Test walls with factor 2
+        field.setSpot(2,1, Field.Spot.Wall)
+        assertEquals(2, field.getSpotCode(Point(1,1), Direction.North))
+        assertEquals(2 *3, field.getSpotCode(Point(1,1), Direction.East))
+        assertEquals(2 *3*3, field.getSpotCode(Point(1,1), Direction.South))
+
+        // Two walls, two diamonds
+        field.setSpot(1,0, Field.Spot.Diamond)
+        field.setSpot(2,0, Field.Spot.Diamond)
+        assertEquals(2 + 2*3 + 1*3*3 + 1*3*3*3, field.getSpotCode(Point(2,0), Direction.North))
+    }
 
     @Test
     fun testGetPointWithDirection() {

@@ -1,6 +1,6 @@
 package evolu
 
-class Field(val width: Int, val height: Int) {
+class Field(private val width: Int, private val height: Int) {
     private val numOfDiamonds = 7
     private var array = ArrayList<Spot>(width * height)
 
@@ -17,6 +17,10 @@ class Field(val width: Int, val height: Int) {
         Empty,
         Diamond,
         Wall,
+    }
+
+    fun getSpot(point: Point): Spot {
+        return getSpot(point.x, point.y)
     }
 
     fun getSpot(x: Int, y: Int): Spot {
@@ -43,10 +47,24 @@ class Field(val width: Int, val height: Int) {
     }
 
     fun getSpotCode(position: Point, direction: Direction): Int {
-        //  2
-        // 341
+        val pointNorth = Point(0,1)
+        val pointEast  = Point(1,0)
+        val pointWest  = Point(-1,0)
 
-        return 0
+        val directedNorth = getPointWithDirection(pointNorth, direction) + position
+        val directedEast  = getPointWithDirection(pointEast, direction)  + position
+        val directedWest  = getPointWithDirection(pointWest, direction)  + position
+
+        // Factors
+        // ' 2 '
+        // '341'
+        var result = 0
+        result += getSpot(directedEast).ordinal * 1
+        result += getSpot(directedNorth).ordinal * 3
+        result += getSpot(directedWest).ordinal * 3*3
+        result += getSpot(position).ordinal * 3*3*3
+
+        return result
     }
 
     fun randomize() {

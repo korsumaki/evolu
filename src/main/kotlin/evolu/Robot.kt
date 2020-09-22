@@ -10,7 +10,11 @@ package evolu
 *       - used steps
 */
 
-data class Point(var x: Int, var y: Int)
+data class Point(var x: Int, var y: Int) {
+    operator fun plus(inc: Point): Point {
+        return Point(x+inc.x, y+inc.y)
+    }
+}
 
 enum class Direction {
     North,
@@ -27,7 +31,7 @@ class Statistics {
 class Robot {
     var currentPosition = Point(0,0)
     var currentDirection: Direction = Direction.North
-    var genome: String = "asdf"
+    var genome: String = ""
 
     var statistics = Statistics()
 
