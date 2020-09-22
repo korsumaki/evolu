@@ -2,12 +2,12 @@ package evolu
 
 class Field(val width: Int, val height: Int) {
     private val numOfDiamonds = 7
-    var array = ArrayList<Spot>(width * height)
+    private var array = ArrayList<Spot>(width * height)
 
     // Initialize field with Empty spots
     init {
-        for (x in 0..width) {
-            for (y in 0..height) {
+        for (x in 1..width) {
+            for (y in 1..height) {
                 array.add(Spot.Empty)
             }
         }
@@ -15,8 +15,8 @@ class Field(val width: Int, val height: Int) {
 
     enum class Spot {
         Empty,
+        Diamond,
         Wall,
-        Diamond
     }
 
     fun getSpot(x: Int, y: Int): Spot {
@@ -33,6 +33,22 @@ class Field(val width: Int, val height: Int) {
         array[x + y * height] = value
     }
 
+    fun getPointWithDirection(pointDelta: Point, direction: Direction): Point {
+        return when (direction) {
+            Direction.North -> Point( pointDelta.x,  pointDelta.y)
+            Direction.East  -> Point( pointDelta.y, -pointDelta.x)
+            Direction.South -> Point(-pointDelta.x, -pointDelta.y)
+            Direction.West  -> Point(-pointDelta.y,  pointDelta.x)
+        }
+    }
+
+    fun getSpotCode(position: Point, direction: Direction): Int {
+        //  2
+        // 341
+
+        return 0
+    }
+
     fun randomize() {
         var diamondsLeft = numOfDiamonds
         while (diamondsLeft > 0) {
@@ -45,16 +61,23 @@ class Field(val width: Int, val height: Int) {
         }
     }
 
-    private val emptyCharacter = '.'
+    private val emptyCharacter = ' '
     private val wallCharacter = '#'
     private val diamondCharacter = '$'
+    private val robotCharacter = 'x'
 
-    fun visualize() {
+    fun visualize(robotPosition: Point) {
         // Start from -1 to draw also walls
         for (x in -1..width) {
             for (y in -1..height) {
                 when (getSpot(x, y)) {
                     Spot.Empty -> print(emptyCharacter)
+                    /*{
+                        if (robotPosition.x == x && robotPosition.y == y)
+                            print(robotCharacter)
+                        else
+                            print(emptyCharacter)
+                    }*/
                     Spot.Wall -> print(wallCharacter)
                     Spot.Diamond -> print(diamondCharacter)
                 }

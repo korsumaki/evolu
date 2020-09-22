@@ -11,15 +11,17 @@ class App {
 }
 
 /*
-* - Field
+* + Field
 * - Robot
-*     - Position
+*     - Position, direction
 *     - Genome
+*       - String[54]
 *     - Statistics
+*       - collected diamonds
+*       - used steps
 * - Cpu
 *
 * */
-
 
 fun main() {
     println("Evolution starts now...")
@@ -27,5 +29,5 @@ fun main() {
     val field = Field(7,7)
 
     field.randomize()
-    field.visualize()
+    field.visualize(Point(4, 4))
 }
