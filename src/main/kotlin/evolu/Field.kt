@@ -2,6 +2,7 @@ package evolu
 
 class Field(private val width: Int, private val height: Int) {
     private val numOfDiamonds = 7
+    var numOfDiamondsLeft = numOfDiamonds
     private var array = ArrayList<Spot>(width * height)
 
     // Initialize field with Empty spots
@@ -28,6 +29,10 @@ class Field(private val width: Int, private val height: Int) {
         if (y < 0 || y >= height) return Spot.Wall
 
         return array[x + y*height]
+    }
+
+    fun setSpot(point: Point, value: Spot) {
+        return setSpot(point.x, point.y, value)
     }
 
     fun setSpot(x: Int, y: Int, value: Spot) {
@@ -86,16 +91,16 @@ class Field(private val width: Int, private val height: Int) {
 
     fun visualize(robotPosition: Point) {
         // Start from -1 to draw also walls
-        for (x in -1..width) {
-            for (y in -1..height) {
+        for (y in height downTo -1) {
+            for (x in -1..width) {
                 when (getSpot(x, y)) {
-                    Spot.Empty -> print(emptyCharacter)
-                    /*{
+                    Spot.Empty -> //print(emptyCharacter)
+                    {
                         if (robotPosition.x == x && robotPosition.y == y)
                             print(robotCharacter)
                         else
                             print(emptyCharacter)
-                    }*/
+                    }
                     Spot.Wall -> print(wallCharacter)
                     Spot.Diamond -> print(diamondCharacter)
                 }

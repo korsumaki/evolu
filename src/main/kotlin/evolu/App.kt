@@ -19,7 +19,7 @@ class App {
 *     - Statistics
 *       - collected diamonds
 *       - used steps
-* - Cpu
+*     - Cpu
 *
 * */
 
@@ -29,5 +29,5 @@ fun main() {
     val field = Field(7,7)
 
     field.randomize()
-    field.visualize(Point(4, 4))
+    field.visualize(Point(0, 0))
 }
