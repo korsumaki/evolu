@@ -25,9 +25,24 @@ class App {
 
 fun main() {
     println("Evolution starts now...")
+    val stepLimit = 1000
 
     val field = Field(7,7)
-
     field.randomize()
-    field.visualize(Point(0, 0))
+
+    val robot = Robot(field)
+    robot.randomizePosition()
+    robot.randomizeDirection()
+
+    field.visualize(robot.currentPosition)
+
+    // run code until instruction limit or all diamonds found
+    while (field.numOfDiamondsLeft > 0 && robot.statistics.usedSteps < stepLimit) {
+        val spotCode = field.getSpotCode(robot.currentPosition, robot.currentDirection)
+        robot.execute(spotCode)
+    }
+    println("End. ${field.numOfDiamondsLeft} diamonds left. Used steps ${robot.statistics.usedSteps}")
+
+    println("genome: ${robot.genome}")
+    // print statistics
 }

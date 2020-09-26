@@ -34,19 +34,46 @@ class Statistics {
 class Robot(var field: Field) {
     var currentPosition = Point(0,0)
     var currentDirection: Direction = Direction.North
-    var genome: String = ""
+    var genome: String = randomizeGenome()
 
     var statistics = Statistics()
 
+    private fun randomizeGenome() : String {
+        var s = String()
+        repeat(54) {
+            s += Random.nextInt(1,6).toString()
+        }
+        println("randomizeGenome() -> $s")
+        return s
+    }
+
+    fun randomizePosition() {
+        currentPosition.x = Random.nextInt(0,field.width)
+        currentPosition.y = Random.nextInt(0,field.height)
+        println("randomizePosition() -> $currentPosition")
+    }
+
+    fun randomizeDirection() {
+        currentDirection = when (Random.nextInt(4)) {
+            0 -> Direction.North
+            1 -> Direction.East
+            2 -> Direction.South
+            3 -> Direction.West
+            else -> Direction.North
+        }
+        println("randomizeDirection() -> $currentDirection")
+    }
+
+
+
     fun execute(spotCode: Int): Boolean {
         if (spotCode >= genome.length) {
-            println("ERROR: Robot.execute(): Too big spotCode ($spotCode), maximum allowed is ${genome.length}.")
+            println("ERROR: Robot.execute(): Too big spotCode ($spotCode), maximum allowed is ${genome.length-1}.")
             statistics.executionErrors++
             return false
         }
-        val instr = genome[spotCode]
 
-        when (instr) {
+        when (val instr = genome[spotCode]) {
             '1' -> pickDiamond()
             '2' -> moveForward()
             '3' -> turnLeftMoveForward()
@@ -64,6 +91,7 @@ class Robot(var field: Field) {
     }
 
     fun pickDiamond() {
+        println("pickDiamond")
         val spot = field.getSpot(currentPosition)
         if (spot == Field.Spot.Diamond) {
             println("Got Diamond!")
@@ -91,7 +119,7 @@ class Robot(var field: Field) {
             }
 
         }
-        println(" -> pos=$currentPosition")
+        println(" -> $currentPosition")
     }
 
     fun turnLeftMoveForward() {
@@ -124,11 +152,11 @@ class Robot(var field: Field) {
 
     fun randomOperation() {
         println("randomOperation")
-        when (Random.nextInt(4)) {
-            1 -> pickDiamond()
+        when (Random.nextInt(2,5)) {
             2 -> moveForward()
             3 -> turnLeftMoveForward()
             4 -> turnRightMoveForward()
+            else -> println("ERROR: randomOperation else")
         }
     }
 }

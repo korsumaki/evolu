@@ -63,5 +63,9 @@ internal class RobotTest {
 
     @Test
     fun randomOperation() {
+        val field = Field(5,5)
+        val robot = Robot(field)
+        robot.currentPosition = Point(2,2)
+        robot.randomOperation()
     }
 }

@@ -1,6 +1,6 @@
 package evolu
 
-class Field(private val width: Int, private val height: Int) {
+class Field(val width: Int, val height: Int) {
     private val numOfDiamonds = 7
     var numOfDiamondsLeft = numOfDiamonds
     private var array = ArrayList<Spot>(width * height)
