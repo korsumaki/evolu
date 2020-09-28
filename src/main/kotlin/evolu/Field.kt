@@ -1,5 +1,7 @@
 package evolu
 
+import kotlin.collections.ArrayList
+
 class Field(val width: Int, val height: Int) {
     private val numOfDiamonds = 7
     var numOfDiamondsLeft = numOfDiamonds
@@ -18,6 +20,12 @@ class Field(val width: Int, val height: Int) {
         Empty,
         Diamond,
         Wall,
+    }
+
+    fun copy(): Field {
+        val copyField = Field(this.width, this.height)
+        copyField.array = ArrayList(array)
+        return copyField
     }
 
     fun getSpot(point: Point): Spot {

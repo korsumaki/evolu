@@ -81,4 +81,15 @@ internal class FieldTest {
         assertEquals(pointWest, field.getPointWithDirection(pointEast, Direction.South))
         assertEquals(pointEast, field.getPointWithDirection(pointWest, Direction.South))
     }
+
+    @Test
+    fun testFieldCopying() {
+        val originalField = Field(5, 5)
+        val duplicateField = originalField.copy()
+        assertEquals(Field.Spot.Empty, originalField.getSpot(2,2))
+
+        duplicateField.setSpot(2,2,Field.Spot.Diamond)
+        assertEquals(Field.Spot.Diamond, duplicateField.getSpot(2,2))
+        assertEquals(Field.Spot.Empty, originalField.getSpot(2,2))
+    }
 }
