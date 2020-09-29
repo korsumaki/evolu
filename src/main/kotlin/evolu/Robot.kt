@@ -29,6 +29,14 @@ class Statistics {
     var usedSteps = 0
     var diamondsCollected = 0
     var executionErrors = 0
+
+    operator fun plus(other: Statistics): Statistics {
+        val stat = Statistics()
+        stat.usedSteps = this.usedSteps + other.usedSteps
+        stat.diamondsCollected = this.diamondsCollected + other.diamondsCollected
+        stat.executionErrors = this.executionErrors + other.executionErrors
+        return stat
+    }
 }
 
 class Robot(var field: Field) {
@@ -37,6 +45,7 @@ class Robot(var field: Field) {
     var genome: String = randomizeGenome()
 
     var statistics = Statistics()
+    var statisticsAllTime = Statistics()
 
     private fun randomizeGenome() : String {
         var s = String()
@@ -50,7 +59,7 @@ class Robot(var field: Field) {
     fun randomizePosition() {
         currentPosition.x = Random.nextInt(0,field.width)
         currentPosition.y = Random.nextInt(0,field.height)
-        println("randomizePosition() -> $currentPosition")
+        //println("randomizePosition() -> $currentPosition")
     }
 
     fun randomizeDirection() {
@@ -61,7 +70,7 @@ class Robot(var field: Field) {
             3 -> Direction.West
             else -> Direction.North
         }
-        println("randomizeDirection() -> $currentDirection")
+        //println("randomizeDirection() -> $currentDirection")
     }
 
 
@@ -91,23 +100,23 @@ class Robot(var field: Field) {
     }
 
     fun pickDiamond() {
-        println("pickDiamond")
+        //println("pickDiamond")
         val spot = field.getSpot(currentPosition)
         if (spot == Field.Spot.Diamond) {
-            println("Got Diamond!")
+            //println("Got Diamond!")
             field.setSpot(currentPosition, Field.Spot.Empty)
             statistics.diamondsCollected++
             field.numOfDiamondsLeft--
         }
     }
     fun moveForward() {
-        print("moveForward: $currentPosition")
+        //print("moveForward: $currentPosition")
         val newPoint = currentPosition + field.getPointWithDirection(Point(0,1), currentDirection)
         if (field.getSpot(newPoint) != Field.Spot.Wall) {
             currentPosition = newPoint
         }
         else {
-            println("BADMOVE: Tried to walk to wall")
+            //println("BadMove: Tried to walk to wall")
             statistics.executionErrors++
 
             // Turn to opposite direction
@@ -119,39 +128,39 @@ class Robot(var field: Field) {
             }
 
         }
-        println(" -> $currentPosition")
+        //println(" -> $currentPosition")
     }
 
     fun turnLeftMoveForward() {
         // Turning left
-        print("turnLeftMoveForward: $currentDirection")
+        //print("turnLeftMoveForward: $currentDirection")
         currentDirection = when (currentDirection) {
             Direction.North -> Direction.West
             Direction.East -> Direction.North
             Direction.South -> Direction.East
             Direction.West -> Direction.South
         }
-        println(" -> $currentDirection")
+        //println(" -> $currentDirection")
 
         moveForward()
     }
 
     fun turnRightMoveForward() {
         // Turning left
-        print("turnRightMoveForward: $currentDirection")
+        //print("turnRightMoveForward: $currentDirection")
         currentDirection = when (currentDirection) {
             Direction.North -> Direction.East
             Direction.East -> Direction.South
             Direction.South -> Direction.West
             Direction.West -> Direction.North
         }
-        println(" -> $currentDirection")
+        //println(" -> $currentDirection")
 
         moveForward()
     }
 
     fun randomOperation() {
-        println("randomOperation")
+        //println("randomOperation")
         when (Random.nextInt(2,5)) {
             2 -> moveForward()
             3 -> turnLeftMoveForward()
