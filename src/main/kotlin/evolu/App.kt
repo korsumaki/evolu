@@ -3,6 +3,8 @@
  */
 package evolu
 
+import kotlin.collections.ArrayList
+
 class App {
     val greeting: String
         get() {
@@ -26,23 +28,59 @@ class App {
 fun main() {
     println("Evolution starts now...")
     val stepLimit = 1000
+    val robotCount = 1000
+    val fieldCount = 1000
 
-    val field = Field(7,7)
-    field.randomize()
+    val robotList = ArrayList<Robot>(robotCount)
+    val fieldList = ArrayList<Field>(fieldCount)
 
-    val robot = Robot(field)
-    robot.randomizePosition()
-    robot.randomizeDirection()
+    val origField = Field(7,7)
+    origField.randomize()
 
-    field.visualize(robot.currentPosition)
-
-    // run code until instruction limit or all diamonds found
-    while (field.numOfDiamondsLeft > 0 && robot.statistics.usedSteps < stepLimit) {
-        val spotCode = field.getSpotCode(robot.currentPosition, robot.currentDirection)
-        robot.execute(spotCode)
+    println("Creating fields...")
+    repeat (fieldCount) {
+        val field = Field(7,7)
+        field.randomize()
+        fieldList.add(field)
     }
-    println("End. ${field.numOfDiamondsLeft} diamonds left. Used steps ${robot.statistics.usedSteps}")
 
-    println("genome: ${robot.genome}")
+    println("Creating robots...")
+    repeat (robotCount) {
+        val copyField = origField.copy()
+        val robot = Robot(copyField)
+        robotList.add(robot)
+    }
+
+    // ========================
+
+    for ((fieldIndex, field) in fieldList.withIndex()) {
+        println("============ Testing field #$fieldIndex")
+        for (robot in robotList) {
+            robot.field = field.copy()
+            robot.randomizePosition()
+            robot.randomizeDirection()
+            robot.statistics = Statistics()
+
+            // run code until instruction limit or all diamonds found
+            while (robot.field.numOfDiamondsLeft > 0 && robot.statistics.usedSteps < stepLimit) {
+                val spotCode = robot.field.getSpotCode(robot.currentPosition, robot.currentDirection)
+                robot.execute(spotCode)
+            }
+
+            robot.statisticsAllTime += robot.statistics
+            //println("End. ${robot.field.numOfDiamondsLeft} diamonds left. Used steps ${robot.statistics.usedSteps}")
+        }
+    }
+    // ========================
     // print statistics
+    println("Statistics, sorted")
+    robotList.sortBy { it.statisticsAllTime.executionErrors }
+    robotList.sortBy { it.statisticsAllTime.usedSteps }
+    robotList.sortByDescending { it.statisticsAllTime.diamondsCollected }
+    for ((index, robot) in robotList.withIndex()) {
+        println("#$index: diamonds=${robot.statisticsAllTime.diamondsCollected.toDouble()/fieldCount}, " +
+                "steps=${robot.statisticsAllTime.usedSteps.toDouble()/fieldCount}, " +
+                "errors=${robot.statisticsAllTime.executionErrors.toDouble()/fieldCount}, " +
+                "Genome: ${robot.genome}")
+    }
 }
