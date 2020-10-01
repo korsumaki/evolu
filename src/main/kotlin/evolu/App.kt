@@ -4,6 +4,7 @@
 package evolu
 
 import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 class App {
     val greeting: String
@@ -53,34 +54,64 @@ fun main() {
 
     // ========================
 
-    for ((fieldIndex, field) in fieldList.withIndex()) {
-        println("============ Testing field #$fieldIndex")
-        for (robot in robotList) {
-            robot.field = field.copy()
-            robot.randomizePosition()
-            robot.randomizeDirection()
-            robot.statistics = Statistics()
+    val progressStep = fieldList.size / 100
+    val progressNumberStep = fieldList.size / 10
+    repeat(30) {
+        // One generation
+        print("Testing fields: ")
+        for ((fieldIndex, field) in fieldList.withIndex()) {
 
-            // run code until instruction limit or all diamonds found
-            while (robot.field.numOfDiamondsLeft > 0 && robot.statistics.usedSteps < stepLimit) {
-                val spotCode = robot.field.getSpotCode(robot.currentPosition, robot.currentDirection)
-                robot.execute(spotCode)
+            // Progress indicator
+            if ((fieldIndex+1) % progressStep == 0) {
+                if ((fieldIndex+1) % progressNumberStep == 0) {
+                    print( 10*(fieldIndex+1)/progressNumberStep)
+                }
+                else {
+                    print('.')
+                }
             }
 
-            robot.statisticsAllTime += robot.statistics
-            //println("End. ${robot.field.numOfDiamondsLeft} diamonds left. Used steps ${robot.statistics.usedSteps}")
+            for (robot in robotList) {
+                robot.field = field.copy()
+                robot.randomizePosition()
+                robot.randomizeDirection()
+                robot.statistics = Statistics()
+
+                // run code until instruction limit or all diamonds found
+                while (robot.field.numOfDiamondsLeft > 0 && robot.statistics.usedSteps < stepLimit) {
+                    val spotCode = robot.field.getSpotCode(robot.currentPosition, robot.currentDirection)
+                    robot.execute(spotCode)
+                }
+
+                robot.statisticsAllTime += robot.statistics
+                //println("End. ${robot.field.numOfDiamondsLeft} diamonds left. Used steps ${robot.statistics.usedSteps}")
+            }
         }
-    }
-    // ========================
-    // print statistics
-    println("Statistics, sorted")
-    robotList.sortBy { it.statisticsAllTime.executionErrors }
-    robotList.sortBy { it.statisticsAllTime.usedSteps }
-    robotList.sortByDescending { it.statisticsAllTime.diamondsCollected }
-    for ((index, robot) in robotList.withIndex()) {
-        println("#$index: diamonds=${robot.statisticsAllTime.diamondsCollected.toDouble()/fieldCount}, " +
-                "steps=${robot.statisticsAllTime.usedSteps.toDouble()/fieldCount}, " +
-                "errors=${robot.statisticsAllTime.executionErrors.toDouble()/fieldCount}, " +
-                "Genome: ${robot.genome}")
+        println()
+
+        // ========================
+        // print statistics
+        println("Statistics for round ${it+1}, sorted")
+        robotList.sortBy { it.statisticsAllTime.executionErrors }
+        robotList.sortBy { it.statisticsAllTime.usedSteps }
+        robotList.sortByDescending { it.statisticsAllTime.diamondsCollected }
+        for ((index, robot) in robotList.withIndex()) {
+            println("#$index: diamonds=${robot.statisticsAllTime.diamondsCollected.toDouble()/fieldCount}, " +
+                    "steps=${robot.statisticsAllTime.usedSteps.toDouble()/fieldCount}, " +
+                    "errors=${robot.statisticsAllTime.executionErrors.toDouble()/fieldCount}, " +
+                    "Genome: ${robot.genome}")
+        }
+
+        // Get best from this generation, and create next generation
+        val tempRobots = robotList.subList(0, robotList.size/3) // Take best third
+
+        println("Creating next generation robots...")
+        for (robot in robotList) {
+            robot.statisticsAllTime = Statistics()
+            robot.genome = robot.generateGenome(
+                tempRobots[Random.nextInt(tempRobots.size)].genome,
+                tempRobots[Random.nextInt(tempRobots.size)].genome
+            )
+        }
     }
 }
