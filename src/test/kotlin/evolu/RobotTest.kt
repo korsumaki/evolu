@@ -2,6 +2,7 @@ package evolu
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 internal class RobotTest {
 
@@ -67,5 +68,19 @@ internal class RobotTest {
         val robot = Robot(field)
         robot.currentPosition = Point(2,2)
         robot.randomOperation()
+    }
+
+    @Test
+    fun testGenerateGenome() {
+        val field = Field(5,5)
+        val robot1 = Robot(field)
+        val robot2 = Robot(field)
+        val robot3 = Robot(field)
+
+        robot3.generateGenome(robot1.genome, robot2.genome)
+        assertEquals(54, robot3.genome.length)
+        assertNotEquals(robot1.genome, robot3.genome)
+        assertNotEquals(robot2.genome, robot3.genome)
+        assertNotEquals(robot1.genome, robot2.genome)
     }
 }

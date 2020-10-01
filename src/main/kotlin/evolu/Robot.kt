@@ -56,6 +56,20 @@ class Robot(var field: Field) {
         return s
     }
 
+    fun generateGenome(gen1: String, gen2: String) : String {
+        var s = String()
+        println("generateGenome() IN1 $gen1")
+        println("generateGenome() IN2 $gen2")
+        repeat(gen1.length) {
+            when (Random.nextInt(0,2)) {
+                0 -> s += gen1[it]
+                1 -> s += gen2[it]
+            }
+        }
+        println("generateGenome() OUT $s")
+        return s
+    }
+
     fun randomizePosition() {
         currentPosition.x = Random.nextInt(0,field.width)
         currentPosition.y = Random.nextInt(0,field.height)
@@ -94,8 +108,6 @@ class Robot(var field: Field) {
             }
         }
         statistics.usedSteps++
-
-        // TODO check if there are diamonds left
         return true
     }
 
