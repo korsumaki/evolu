@@ -97,10 +97,10 @@ class Robot(var field: Field) {
         }
 
         when (val instr = genome[spotCode]) {
-            '1' -> pickDiamond()
-            '2' -> moveForward()
-            '3' -> turnLeftMoveForward()
-            '4' -> turnRightMoveForward()
+            '1' -> moveForward()
+            '2' -> turnLeftMoveForward()
+            '3' -> turnRightMoveForward()
+            '4' -> pickDiamond()
             '5' -> randomOperation()
             else -> {
                 println("ERROR: Unknown inst '$instr'")
@@ -173,10 +173,10 @@ class Robot(var field: Field) {
 
     fun randomOperation() {
         //println("randomOperation")
-        when (Random.nextInt(2,5)) {
-            2 -> moveForward()
-            3 -> turnLeftMoveForward()
-            4 -> turnRightMoveForward()
+        when (Random.nextInt(1,4)) {
+            1 -> moveForward()
+            2 -> turnLeftMoveForward()
+            3 -> turnRightMoveForward()
             else -> println("ERROR: randomOperation else")
         }
     }
