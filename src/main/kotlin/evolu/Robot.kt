@@ -60,12 +60,26 @@ class Robot(var field: Field) {
         var s = String()
         //println("generateGenome() IN1 $gen1")
         //println("generateGenome() IN2 $gen2")
+
+        // Mutation copy
+        // TODO I think this mutation version could be done better...
+        repeat(gen1.length) {
+            when (Random.nextInt(0,54*1000)) {
+                0 -> { s += Random.nextInt(1,6).toString()
+                    println("random") }
+                in 1..27000 -> s += gen1[it]
+                in 27001..54000 -> s += gen2[it]
+            }
+        }
+/*
+        // Normal copy
         repeat(gen1.length) {
             when (Random.nextInt(0,2)) {
                 0 -> s += gen1[it]
                 1 -> s += gen2[it]
             }
         }
+*/
         //println("generateGenome() OUT $s")
         return s
     }

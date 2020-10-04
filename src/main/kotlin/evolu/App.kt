@@ -30,7 +30,7 @@ fun main() {
     println("Evolution starts now...")
     val stepLimit = 1000
     val robotCount = 1000
-    val fieldCount = 1000
+    val fieldCount = 100
 
     val robotList = ArrayList<Robot>(robotCount)
     val fieldList = ArrayList<Field>(fieldCount)
@@ -38,14 +38,14 @@ fun main() {
     val origField = Field(7,7)
     origField.randomize()
 
-    println("Creating fields...")
+    println("Creating $fieldCount fields...")
     repeat (fieldCount) {
         val field = Field(7,7)
         field.randomize()
         fieldList.add(field)
     }
 
-    println("Creating robots...")
+    println("Creating $robotCount robots...")
     repeat (robotCount) {
         val copyField = origField.copy()
         val robot = Robot(copyField)
